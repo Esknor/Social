@@ -1,0 +1,62 @@
+<script src="https://static.opentok.com/v2/js/opentok.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+var apiKey =  45881452;
+var sessionId = "<%= @room.sessionId %>";
+var token = "<%= @opentok.generate_token @room.sessionId %>";
+var session;
+
+function connect() {
+  session = OT.initSession(apiKey, sessionId);
+
+  session.addEventListener('sessionConnected', sessionConnectedHendler);
+  session.addEventListener('streamCreated', streamCreatedHandler);
+
+  session.connect(token, function(error) {
+    if (error) {
+      console.log('Unable to connect: ', error.message);
+    } else {
+      console.log('Connected to the session.');
+    }
+  });
+
+  function sessionConnectedHendler(event) {
+    session.publish("videobox");
+
+    console.log('Connected ' + event.streams.length);
+    for(var i = 0; i < event.streams.length; i++) {
+      if(session.connection.connectionId != event.streams[i].connection.connectionId) {
+        subscribeToStream(event.streams[i]);
+      }
+    }
+  }
+
+  function streamCreatedHandler(event) {
+    console.log('Created ' + event.streams.length);
+    for(var i = 0; i < event.streams.length; i++) {
+      if(session.connection.connectionId != event.streams[i].connection.connectionId) {
+        subscribeToStream(event.streams[i]);
+      }
+    }
+  }
+
+  function subscribeToStream(stream) {
+    var div = document.createElement('div');
+    div.setAttribute('id', 'stream-' + stream.connection.connectionId);
+    document.body.appendChild(div);
+
+    session.subscribe(stream, div.id);
+  }
+
+}
+
+function disconnect() {
+  session.disconnect();
+  console.log("disconnected from session")
+}
+
+</script>
+
+<button type="button" class="btn btn-default" id="disconnectBtn" onclick="disconnect();">Disconnect</button>
+<button type="button" class="btn btn-default" id="disconnectBtn" onclick="connect();">Connect</button>
+<div id="videobox"></div>

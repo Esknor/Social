@@ -1,0 +1,27 @@
+<div class="row">
+	<div class="col col-xs-4">
+		<h1><%= @userinfo.firstname %> <%= @userinfo.lastname %></h1>
+		<img src=<%= @userinfo.avatar %> alt="Avatar" height="256" width="256"> 
+
+		<h3>
+		  <strong>Email:</strong>
+		  <%= @user.email %>
+		</h3>
+
+		<h3>
+		  <strong>Status:</strong>
+		  <%= @userinfo.status %>
+		</h3>
+
+		<br>
+		<% if signed_in? and current_user.userinfo == @userinfo %>
+			<%= link_to "Edit", edit_userinfo_path(@user.userinfo_id), class: "btn btn-primary" %>
+		<% end %>
+	</div>
+
+	<div class="col col-xs-8">
+		<% if get_perm != "visitor" and current_user != @user %>
+			<%= render 'dialog' %>
+		<% end %>
+	</div>
+</div>

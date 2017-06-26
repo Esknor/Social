@@ -1,0 +1,24 @@
+<div class="jumbotron">
+<% if signed_in? %>
+	<div class="row" align="center">
+		<% userinfo = current_user.userinfo %>
+		<h1><%= userinfo.firstname %> <%= userinfo.lastname %></h1>
+		<img src=<%= userinfo.avatar %> alt="Avatar" height="256" width="256"> 
+
+		<h3>
+		  <strong>Email:</strong>
+		  <%= current_user.email %>
+		</h3>
+
+		<h3>
+		  <strong>Status:</strong>
+		  <%= userinfo.status %>
+		</h3>
+
+		<br>
+		<%= link_to "Edit", edit_userinfo_path(userinfo.id), class: "btn btn-primary" %>
+	</div>
+<% else %>
+	<h1>Anonymous. Please <%= link_to t('sign_in'), signin_path %>.</h1>
+<% end %>
+</div>

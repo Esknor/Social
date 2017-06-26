@@ -1,0 +1,42 @@
+<div class="container" style="max-width: 80%">
+	<h2>Dialog</h2>
+	<br>
+	
+	<% if !@messages.nil? %>
+	<ul class="list-group">
+		<% @messages[0..9].each do |m| %>
+			<li class="list-group-item">
+				<div class="row">
+					<div class="col col-xs-2">
+						<img src=<%= m.sender.userinfo.avatar %> alt="Avatar" height="64" width="64">
+						<h6><%= m.sender.userinfo.firstname %></h6>
+					</div>
+					<div class="col col-xs-9">
+						<%= m.content.html_safe %>
+					</div>
+					<div class="col col-xs-1">
+						<%= m.created_at.strftime("%I:%M %P") %>
+					</div>
+				</div>
+			</li>
+		<% end %>
+	</ul>
+	<% end %>
+
+	<%= form_for(@message) do |f| %>
+		  <div class="field">
+		    <%= f.trix_editor(:content, size: "78%") %>
+		    
+		  </div>
+		  <div class="field">
+		    <%= f.hidden_field :sender, value: current_user.id %>
+		  </div>
+		  <div class="field">
+		    <%= f.hidden_field :receiver, value: @user.id %>
+		  </div>
+		  <div class="actions">
+		    <%= f.submit "Send" %>
+		  </div>
+	<% end %>
+
+</div>

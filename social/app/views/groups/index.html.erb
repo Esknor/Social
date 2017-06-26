@@ -1,0 +1,59 @@
+<p id="notice"><%= notice %></p>
+<div class="container">
+<h1>Groups</h1>
+
+<div class="table table-striped">
+<table class="table">
+
+  <tbody>
+    <% @groups.each do |group| %>
+      <tr>
+        <td width="10%"><a href="/groups/<%= group.id %>" style="min-height:100px; display: block;">
+            <img src=<%= group.image %> alt="GroupLogo" height="100" width="100">
+        </a></td>
+        <td width="40%">
+          <%= group.name %>
+          <br><strong>Owner:&#09;</strong>
+          <a href="/users/<%= group.owner.id %>"><%= "#{group.owner.userinfo.firstname} #{group.owner.userinfo.lastname}" %></a>
+          <br><strong>Privacy:&#09;</strong>
+          <% if !group.privacy %>
+            Open
+          <% else %>
+            Pivate
+          <% end %>
+        </td>
+
+        <% if signed_in? %>
+          <% if current_user.groups.include?(group) %>
+            <% if current_user == group.owner %>
+              <td><strong><h3>Owner</h3></strong></td>
+            <% else %>
+              <td><form action="/groups" method="get">
+                <%= hidden_field_tag('deleteGroup', group.id) %>
+                <input class="btn btn-md btn-danger" type="submit" value="Leave group"/>
+              </form></td>
+            <% end %>
+          <% elsif !group.privacy %>
+              <td><form action="/groups" method="get">
+                <%= hidden_field_tag('addGroup', group.id) %>
+                <input class="btn btn-md btn-success" type="submit" value="Join group"/>
+              </form></td>
+          <% end %>
+        <% end %>
+
+        <% if signed_in? and (is_admin? or group.owner == current_user) %>
+          <td><%= link_to 'Edit', edit_group_path(group), class: "btn btn-default" %></td>
+          <td><%= link_to 'Delete', group, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-default" %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+</div>
+
+<br>
+
+<% if signed_in? %>
+  <%= link_to 'New Group', new_group_path, class: "btn btn-default" %>
+<% end %>
+</div>

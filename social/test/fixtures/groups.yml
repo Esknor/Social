@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  describe: MyText
+  privacy: false
+  image: 
+
+two:
+  name: MyString
+  describe: MyText
+  privacy: false
+  image: 

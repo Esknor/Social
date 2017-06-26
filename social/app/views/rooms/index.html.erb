@@ -1,0 +1,30 @@
+<div id="newRoom">
+  <fieldset>
+	<legend>Start a new party room</legend>
+<%= form_for(@new_room) do |f| %>
+	Party Name: <%= f.text_field :name %><br/><br/>
+	Public? <%= f.check_box :public %><br/><br/>
+
+	<%= f.submit %>
+<% end %>
+</fieldset>
+</div>
+
+<div class="container">
+  <legend>Existing party rooms</legend>
+  <div class="table table-striped">
+    <table class="table">
+      <tr>
+        <th>Name</th>
+        <th>Started</th>
+      </tr>
+
+      <% @rooms.each do |room| %>
+        <tr>
+          <td><a href="/party/<%= room.id %>"><%= room.name %></a></td>
+          <td><%= room.created_at %></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+</div>

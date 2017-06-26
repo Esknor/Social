@@ -1,0 +1,18 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+   <img src=<%= @advertising.img %> alt="Advertising" height="256" width="256"> 
+</p>
+
+<p>
+  <strong>Header:</strong>
+  <%= @advertising.header %>
+</p>
+
+<p>
+  <strong>Content:</strong>
+  <%= @advertising.content %>
+</p>
+
+<%= link_to 'Edit', edit_advertising_path(@advertising) %> |
+<%= link_to 'Back', advertisings_path %>

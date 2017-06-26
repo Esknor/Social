@@ -1,0 +1,114 @@
+<h1> <%= @group.name %> </h1>
+<div class="jumbotron">
+	<div class="row">
+		<div class="col col-xs-3">
+			<img src=<%= @group.image %> alt="GroupLogo" height="256" width="256">
+		</div>
+		<div class="col col-xs-8 col-xs-offset-1">
+			<p>
+				<strong>Description:</strong>
+				<%= @group.describe %>	
+			</p>
+	  		<p>
+			  <strong>Privacy:</strong>
+			  <% if @group.privacy %>
+			  	Private
+			  <% else %>
+			  	Public
+			  <% end %>
+			</p>
+			<p>
+			<% if @group.owner == current_user %>
+				<%= link_to 'Edit', edit_group_path(@group), class: "btn btn-primary" %>
+			<% end %>
+			<% if group_perm == "moderator" or @group.owner == current_user %>
+				<%= form_tag "#{@group.id}/update_privacy", method: "patch" do %>
+					<%= hidden_field_tag('newprivacy', !@group.privacy) %>
+					<input class="btn btn-xs btn-default" type="submit" value="Change privacy"/>
+				<% end %>
+			<% end %>
+			</p>
+	  	</div>
+	</div>
+</div>
+
+<% if (signed_in? and @group.privacy and @members.include?(current_user)) or (!@group.privacy and signed_in?) %>
+
+<br>
+<%= render 'advertisings' %>
+<br>
+
+<div class="container">
+	<h2>Members of Group</h2>
+	<div class="row">
+	<% @members[0..4].each do |m| %>
+		<% i = m.userinfo %>
+		<div class="col col-md-2">
+			<div class="row">
+				<img src=<%= i.avatar %> alt="Avatar" height="128" width="128">
+			</div>
+			<div class="row">
+				<%= link_to "#{i.firstname} #{i.lastname}", m %>
+			</div>
+		</div>
+	<% end %>
+	</div>
+	<div class="row">
+		<%= link_to "View all members", {controller: "groups", action: "members", id: "#{@group.id}"}, class: "btn btn-primary" %>
+	</div>
+</div>
+
+<div class="container">
+	<h2>Posts</h2>
+	<div class="row">
+		<% if get_perm != "visitor" %>
+                      <% if group_perm != "mute" %>
+			<%= render 'form_post' %>
+                      <% end %>
+		<% end %>
+	</div>
+
+	<div class="row">
+		<ul class="list-group">
+			<% @posts[0..9].each do |p| %>
+				<% i = p.user.userinfo %>
+				<li class="list-group-item">
+					<div class="container">
+					<div class="row">
+						<div class="col col-xs-2">
+							<div class="row">
+								<img src=<%= i.avatar %> alt="Avatar" height="64" width="64">
+							</div>
+							<div class="row">
+								<%= link_to "#{i.firstname} #{i.lastname}", p.user %>
+							</div>
+						</div>
+						<div class="col col-xs-9">
+								<%= p.content.html_safe %>
+						</div>
+						<div class="col col-xs-1">
+							<% if group_perm == "moderator" or is_admin? or @group.owner == current_user%>
+								<div class="col col-xs-1">
+									<%= link_to "Edit", edit_post_path(p), class: "btn btn-xs btn-warning" %>
+									<%= link_to "Delete", p, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-xs btn-danger" %>
+								</div>
+							<% end %>
+						</div>
+					</div>
+					<div class="row">
+						<div class="row" align="center">
+							<strong>Created</strong>
+								<%= p.created_at.strftime("%I:%M %P") %>
+							<strong>Updated</strong>
+								<%= p.updated_at.strftime("%I:%M %P") %>
+						</div>
+					</div>
+						
+					</div>
+				</li>
+			<% end %>
+		</ul>
+	</div>
+</div>
+
+<% end %>

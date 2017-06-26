@@ -1,0 +1,31 @@
+<div class="container">
+	<h2>Members of Group</h2>
+	<div class="row">
+	<% @members.each do |m| %>
+		<% i = m.userinfo %>
+		<div class="col col-md-2">
+			<div class="row">
+				<img src=<%= i.avatar %> alt="Avatar" height="128" width="128">
+			</div>
+			<div class="row">
+				<%= link_to "#{i.firstname} #{i.lastname}", m %>
+			</div>
+			<div class="row">
+				<% if m.perm.nil? %>
+					User
+				<% else %>
+					<%= m.perm %>
+				<% end %>
+				<% if group_perm == "admin" %>
+					<%= form_tag edit_group_path(@group), method: "patch" do %>
+						<%= select_tag(:newperm, options_for_select(["admin", "moderator", "user","mute"])) %>
+						<%= hidden_field_tag('userid', m.id) %>
+						<input class="btn btn-xs" type="submit" value="Update"/>
+					<% end %>
+				<% end %>
+			</div>
+			
+		</div>
+	<% end %>
+	</div>
+</div>
